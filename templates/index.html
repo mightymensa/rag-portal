@@ -21,8 +21,10 @@
             width: 400px;
             max-width: 100%;
             text-align: center;
-            resize: none; /* Disable manual resizing */
-            overflow-y: hidden; /* Hide vertical scrollbar */
+            resize: none;
+            /* Disable manual resizing */
+            overflow-y: hidden;
+            /* Hide vertical scrollbar */
         }
 
         button {
@@ -31,7 +33,8 @@
             min-width: 100px;
             border: none;
             border-radius: 10px;
-            padding: 10px;
+            padding: 12px;
+            font-size: 1.2rem;
             cursor: pointer;
             box-shadow: 4px 4px 2px #b8b5b5;
         }
@@ -55,7 +58,8 @@
             border: 1px solid rgb(114, 114, 114);
             margin-top: 20px;
             min-height: 50px;
-            background-color: #dbdbdb;
+            background-color: #e2e1e1;
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -66,7 +70,6 @@
         <!-- <h1>Ask a Question</h1> -->
         <form id="question-form" action="/" method="post">
             <label for="question">Question:</label><br>
-            <!-- <textarea name="" id="" cols="30" rows="10"> -->
             <textarea type="text" id="question" name="question" rows="2"></textarea><br><br>
             <button type="submit" value="Submit">Submit</button>
         </form>
@@ -103,35 +106,19 @@
 
         function do_resize(textbox) {
 
-var maxrows=5; 
- var txt=textbox.value;
- var cols=textbox.cols;
+            var maxrows = 5;
+            var txt = textbox.value;
+            var cols = textbox.cols;
 
-var arraytxt=txt.split('\n');
- var rows=arraytxt.length; 
+            var arraytxt = txt.split('\n');
+            var rows = arraytxt.length;
+            for (i = 0; i < arraytxt.length; i++) {
+                rows += parseInt((arraytxt[i].length - 15) / cols);
+            }
+            if (rows > maxrows) textbox.rows = maxrows;
+            else textbox.rows = rows;
+        }
 
-for (i=0;i<arraytxt.length;i++) 
- rows+=parseInt(arraytxt[i].length/cols);
-
-if (rows>maxrows) textbox.rows=maxrows;
- else textbox.rows=rows;
-}
-
-        // function autoExpand(textarea) {
-        //     // Reset textarea height to auto in case it shrinks
-        //     textarea.style.height = 'auto';
-
-        //     // Calculate the number of rows needed based on the content
-        //     const rowsNeeded = textarea.value.length / parseInt(textarea.style.width.replace(/\D/g, ""));
-            
-        //     // Set the rows attribute based on the content
-        //     textarea.rows = rowsNeeded < 1 ? 1 : Math.floor(rowsNeeded);
-        // }
-
-        // Automatically expand the textarea on page load (if there's initial text)
-        // window.addEventListener('load', function () {
-        //     autoExpand(textarea);
-        // });
     </script>
 </body>
 
