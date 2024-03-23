@@ -1,11 +1,24 @@
-# Run the project
+# Flask server serving requests to a Data Retrieval model from Ollama
 
-## create a virtual environment
+## Requirements
+- Ollama
+
+## Run the project
+
+### create a virtual environment
 python -m venv env
 .\env\Scripts\activate
 
-## install dependencies
+### install dependencies
 pip install -r requirements.txt
 
-## run service
+### update the config file
+[flask]
+port = 5000
+
+[ollama]
+ollama_model = tinydolphin
+data_folder = ./data
+
+### run service
 flask --app app run
