@@ -1,4 +1,4 @@
-# Flask server serving requests to a Data Retrieval model from Ollama
+# Flask server serving requests to a Retrieval-augmented generation model from Ollama
 
 ## Requirements
 - Ollama
