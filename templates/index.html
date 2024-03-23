@@ -11,13 +11,18 @@
             background-color: #c5c5c5;
         }
 
-        input {
+        #question {
             border: none;
-            border-bottom: 2px solid grey;
-            padding-top: 4px;
-            padding-bottom: 3px;
+            border-bottom: 2px solid rgb(143, 142, 142);
+            padding: 7px;
+            font-size: 1.2rem;
             outline: none;
             margin-top: 10px;
+            width: 400px;
+            max-width: 100%;
+            text-align: center;
+            resize: none; /* Disable manual resizing */
+            overflow-y: hidden; /* Hide vertical scrollbar */
         }
 
         button {
@@ -30,8 +35,9 @@
             cursor: pointer;
             box-shadow: 4px 4px 2px #b8b5b5;
         }
-        button:hover{
-            
+
+        button:hover {
+
             background-color: rgb(42, 95, 133);
         }
 
@@ -42,6 +48,15 @@
             margin: auto;
             margin-top: 40px;
         }
+
+        #response {
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgb(114, 114, 114);
+            margin-top: 20px;
+            min-height: 50px;
+            background-color: #dbdbdb;
+        }
     </style>
 </head>
 
@@ -51,7 +66,8 @@
         <!-- <h1>Ask a Question</h1> -->
         <form id="question-form" action="/" method="post">
             <label for="question">Question:</label><br>
-            <input type="text" id="question" name="question"><br><br>
+            <!-- <textarea name="" id="" cols="30" rows="10"> -->
+            <textarea type="text" id="question" name="question" rows="2"></textarea><br><br>
             <button type="submit" value="Submit">Submit</button>
         </form>
         <div id="response"></div>
@@ -59,6 +75,11 @@
 
     <script>
         document.getElementById("question-form").addEventListener("submit", function (event) {
+
+            var responseDiv = document.getElementById("response");
+
+            responseDiv.innerHTML = "Please wait...";
+
             event.preventDefault(); // Prevent the default form submission
 
             var formData = new FormData(this);
@@ -69,11 +90,48 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    var responseDiv = document.getElementById("response");
                     responseDiv.innerHTML = "Response: " + data.response;
                 })
                 .catch(error => console.error('Error:', error));
         });
+
+        const textarea = document.getElementById('question');
+
+        textarea.addEventListener('input', function () {
+            do_resize(textarea);
+        });
+
+        function do_resize(textbox) {
+
+var maxrows=5; 
+ var txt=textbox.value;
+ var cols=textbox.cols;
+
+var arraytxt=txt.split('\n');
+ var rows=arraytxt.length; 
+
+for (i=0;i<arraytxt.length;i++) 
+ rows+=parseInt(arraytxt[i].length/cols);
+
+if (rows>maxrows) textbox.rows=maxrows;
+ else textbox.rows=rows;
+}
+
+        // function autoExpand(textarea) {
+        //     // Reset textarea height to auto in case it shrinks
+        //     textarea.style.height = 'auto';
+
+        //     // Calculate the number of rows needed based on the content
+        //     const rowsNeeded = textarea.value.length / parseInt(textarea.style.width.replace(/\D/g, ""));
+            
+        //     // Set the rows attribute based on the content
+        //     textarea.rows = rowsNeeded < 1 ? 1 : Math.floor(rowsNeeded);
+        // }
+
+        // Automatically expand the textarea on page load (if there's initial text)
+        // window.addEventListener('load', function () {
+        //     autoExpand(textarea);
+        // });
     </script>
 </body>
 
