@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask a Question</title>
+    <style>
+        body {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            background-color: #c5c5c5;
+        }
+
+        input {
+            border: none;
+            border-bottom: 2px solid grey;
+            padding-top: 4px;
+            padding-bottom: 3px;
+            outline: none;
+            margin-top: 10px;
+        }
+
+        button {
+            background-color: rgb(27, 71, 102);
+            color: white;
+            min-width: 100px;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            cursor: pointer;
+            box-shadow: 4px 4px 2px #b8b5b5;
+        }
+        button:hover{
+            
+            background-color: rgb(42, 95, 133);
+        }
+
+        #chat-container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            margin: auto;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='chat-container'>
+
+        <!-- <h1>Ask a Question</h1> -->
+        <form id="question-form" action="/" method="post">
+            <label for="question">Question:</label><br>
+            <input type="text" id="question" name="question"><br><br>
+            <button type="submit" value="Submit">Submit</button>
+        </form>
+        <div id="response"></div>
+    </div>
+
+    <script>
+        document.getElementById("question-form").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            var formData = new FormData(this);
+
+            fetch('/ask', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    var responseDiv = document.getElementById("response");
+                    responseDiv.innerHTML = "Response: " + data.response;
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+
+</html>
