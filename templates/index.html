@@ -8,7 +8,8 @@
     <style>
         body {
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-            background-color: #c5c5c5;
+            background: rgb(59, 55, 119);
+            background: linear-gradient(90deg, rgba(59, 55, 119, 1) 0%, rgba(76, 94, 159, 1) 35%, rgba(34, 84, 147, 1) 100%);
         }
 
         #question {
@@ -22,26 +23,29 @@
             max-width: 100%;
             text-align: center;
             resize: none;
+            color: white;
             /* Disable manual resizing */
             overflow-y: hidden;
             /* Hide vertical scrollbar */
+            background-color: rgba(255, 255, 255, 0.325);
         }
 
         button {
-            background-color: rgb(27, 71, 102);
+            background-color: rgb(19, 93, 146);
             color: white;
             min-width: 100px;
             border: none;
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 1.2rem;
+            border-radius: 5px;
+            padding: 6px 12px;
+            font-size: 1rem;
             cursor: pointer;
-            box-shadow: 4px 4px 2px #b8b5b5;
+            box-shadow: 2px 2px 2px #b6b6b690;
+            margin-top: 10px;
         }
 
         button:hover {
-
-            background-color: rgb(42, 95, 133);
+            box-shadow: 4px 4px 2px #555555;
+            background-color: rgb(25, 62, 89);
         }
 
         #chat-container {
@@ -58,47 +62,110 @@
             border: 1px solid rgb(114, 114, 114);
             margin-top: 20px;
             min-height: 50px;
-            background-color: #e2e1e1;
+            background-color: #e2e1e170;
             font-size: 1.2rem;
+        }
+
+        label {
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        div {
+            color: white;
+        }
+
+        .response {
+            border-left: 3px solid rgb(144, 225, 144);
+            margin-bottom: 30px;
+            padding-right: 20%;
+            padding-left: 5px;
+            text-align: left;
+        }
+
+        .question {
+            border-right: 3px solid rgb(152, 211, 230);
+            padding-left: 20%;
+            padding-right: 5px;
+            text-align: right;
+            margin-bottom: 15px;
+
+
+        }
+
+        #please-wait {
+            margin-top: 20px;
+            color: aqua;
+        }
+
+        #resp-container {
+            margin-top: 20px;
         }
     </style>
 </head>
 
 <body>
-    <div id='chat-container'>
 
-        <!-- <h1>Ask a Question</h1> -->
-        <form id="question-form" action="/" method="post">
-            <label for="question">Question:</label><br>
-            <textarea type="text" id="question" name="question" rows="2"></textarea><br><br>
-            <button type="submit" value="Submit">Submit</button>
+    <div id='chat-container'>
+        <img src="/public/img/bruce.png" height='35px' alt="not found">
+        <hr style='margin-bottom: 10px;'>
+        <form id="question-form" action="/" method="post" style="margin-top: 15px;">
+            <label for="question">Prompt:</label><br>
+            <textarea type="text" id="question" name="question" rows="2"></textarea>
+            <button type="submit" value="Submit">Send</button>
         </form>
-        <div id="response"></div>
+        <div id='please-wait'></div>
+        <div id='resp-container'>
+
+        </div>
     </div>
 
     <script>
-        document.getElementById("question-form").addEventListener("submit", function (event) {
+        const textarea = document.getElementById('question');
+        const pleaseWait = document.getElementById("please-wait");
+        const _form = document.getElementById("question-form");
+        _form.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                submitForm(this);
+            }
+        });
+        _form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            submitForm(this);
+        });
+        function submitForm(el) {
+            var responseContainer = document.getElementById("resp-container");
+            if (textarea.value == "") return;
+            responseContainer.innerHTML += `<div class="question">${textarea.value}</div>`;
+            pleaseWait.innerHTML = "Please wait";
 
-            var responseDiv = document.getElementById("response");
-
-            responseDiv.innerHTML = "Please wait...";
-
+            var loading = setInterval(() => {
+                loading_text = pleaseWait.innerHTML;
+                if (loading_text.length < 14 && loading_text.length > 0) {
+                    pleaseWait.innerHTML += ".";
+                } else {
+                    pleaseWait.innerHTML = "Please wait";
+                }
+            }, 1000);
             event.preventDefault(); // Prevent the default form submission
 
-            var formData = new FormData(this);
-
+            var formData = new FormData(el);
+            textarea.value = "";
             fetch('/ask', {
                 method: 'POST',
                 body: formData
             })
                 .then(response => response.json())
                 .then(data => {
-                    responseDiv.innerHTML = "Response: " + data.response;
+                    clearInterval(loading);
+                    pleaseWait.innerHTML = "";
+
+                    responseContainer.innerHTML += `<div class="response">${data.response}</div>`;
+
                 })
                 .catch(error => console.error('Error:', error));
-        });
+        }
 
-        const textarea = document.getElementById('question');
 
         textarea.addEventListener('input', function () {
             do_resize(textarea);
@@ -118,6 +185,10 @@
             if (rows > maxrows) textbox.rows = maxrows;
             else textbox.rows = rows;
         }
+
+        window.addEventListener('load', function () {
+            do_resize(textarea);
+        });
 
     </script>
 </body>

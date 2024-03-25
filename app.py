@@ -1,6 +1,6 @@
 import configparser
 
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS, cross_origin
 
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
@@ -37,7 +37,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def process_question(question):
     query_engine = ll_index.as_query_engine()
     response = query_engine.query(question+"?")
-    print(response)
+    # print(response)
     return str(response)
 
 process_question("who are you?")
@@ -51,7 +51,14 @@ def index():
             return jsonify({'response': response})
         else:
             return jsonify({'error': 'No question provided'}), 400
-    return render_template('index.html')
+    with open('./templates/index.html', 'r') as f:
+        html_content = f.read()
+    # return render_template('index.html')
+    return html_content
+
+@app.route('/public/<path:path>')
+def serve_image(path):
+    return send_from_directory('static', path)
 
 @app.route('/ask', methods=['POST'])
 def ask_question():
