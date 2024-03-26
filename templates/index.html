@@ -7,7 +7,8 @@
     <title>Ask a Question</title>
     <style>
         body {
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            margin: 0;
+            font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
             background: rgb(59, 55, 119);
             background: linear-gradient(90deg, rgba(59, 55, 119, 1) 0%, rgba(76, 94, 159, 1) 35%, rgba(34, 84, 147, 1) 100%);
         }
@@ -18,7 +19,8 @@
             padding: 7px;
             font-size: 1.2rem;
             outline: none;
-            margin-top: 10px;
+            line-height: 20px;
+            /* margin-top: 10px; */
             width: 400px;
             max-width: 100%;
             text-align: center;
@@ -31,16 +33,19 @@
         }
 
         button {
+            border: 1px solid rgb(149, 149, 149);
+            height: 36px;
             background-color: rgb(19, 93, 146);
             color: white;
             min-width: 100px;
-            border: none;
-            border-radius: 5px;
+            border-radius: 0 5px 5px 0;
             padding: 6px 12px;
             font-size: 1rem;
             cursor: pointer;
-            box-shadow: 2px 2px 2px #b6b6b690;
-            margin-top: 10px;
+            /* margin: auto; */
+            /* box-shadow: 2px 2px 2px #b6b6b690; */
+            margin-top: auto;
+            margin-bottom: auto;
         }
 
         button:hover {
@@ -53,7 +58,11 @@
             max-width: 500px;
             text-align: center;
             margin: auto;
-            margin-top: 40px;
+            margin-top: 0px;
+            margin-bottom: 10px;
+            max-height: 80%;
+            height: 80%;
+            overflow-y: scroll;
         }
 
         #response {
@@ -100,30 +109,72 @@
 
         #resp-container {
             margin-top: 20px;
+            overflow: scroll;
+        }
+
+        #question-form-container {
+            position: absolute;
+            bottom: 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        #main-window {
+            position: relative;
+            height: 100vh;
+        }
+
+        #question-form {
+            display: flex;
+            justify-content: center;
+            padding-bottom: 10px;
+        }
+
+        #topbar {
+            padding-top: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        ::-webkit-scrollbar {
+            height: 1rem;
+            width: .5rem;
         }
     </style>
 </head>
 
 <body>
+    <div id='main-window'>
+        <div id="topbar">
 
-    <div id='chat-container'>
-        <img src="/public/img/bruce.png" height='35px' alt="not found">
-        <hr style='margin-bottom: 10px;'>
-        <form id="question-form" action="/" method="post" style="margin-top: 15px;">
-            <label for="question">Prompt:</label><br>
-            <textarea type="text" id="question" name="question" rows="2"></textarea>
-            <button type="submit" value="Submit">Send</button>
-        </form>
-        <div id='please-wait'></div>
-        <div id='resp-container'>
+            <img src="/public/img/bruce.png" height="35px" alt="not found" style='margin: auto;'>
+        </div>
+        <div id="chat-container">
+            <hr style="">
 
+            <div id="please-wait"></div>
+            <div id="resp-container">
+
+            </div>
+        </div>
+        <div id="question-form-container">
+
+            <form id="question-form" action="/" method="post">
+                <!-- <label for="question">Prompt:</label><br> -->
+                <textarea type="text" id="question" name="question" rows="2"></textarea>
+                <button type="submit" value="Submit">Send</button>
+            </form>
         </div>
     </div>
 
     <script>
-        const textarea = document.getElementById('question');
+        const textarea = document.getElementById("question");
         const pleaseWait = document.getElementById("please-wait");
         const _form = document.getElementById("question-form");
+        const chatContainer = document.getElementById("chat-container");
+        const responseContainer = document.getElementById("resp-container");
+
+
         _form.addEventListener("keypress", function (event) {
             if (event.key === "Enter") {
                 submitForm(this);
@@ -134,7 +185,6 @@
             submitForm(this);
         });
         function submitForm(el) {
-            var responseContainer = document.getElementById("resp-container");
             if (textarea.value == "") return;
             responseContainer.innerHTML += `<div class="question">${textarea.value}</div>`;
             pleaseWait.innerHTML = "Please wait";
@@ -151,8 +201,9 @@
 
             var formData = new FormData(el);
             textarea.value = "";
-            fetch('/ask', {
-                method: 'POST',
+            do_resize(textarea);
+            fetch("/ask", {
+                method: "POST",
                 body: formData
             })
                 .then(response => response.json())
@@ -161,13 +212,14 @@
                     pleaseWait.innerHTML = "";
 
                     responseContainer.innerHTML += `<div class="response">${data.response}</div>`;
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
 
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => console.error("Error:", error));
         }
 
 
-        textarea.addEventListener('input', function () {
+        textarea.addEventListener("input", function () {
             do_resize(textarea);
         });
 
@@ -177,7 +229,7 @@
             var txt = textbox.value;
             var cols = textbox.cols;
 
-            var arraytxt = txt.split('\n');
+            var arraytxt = txt.split("\n");
             var rows = arraytxt.length;
             for (i = 0; i < arraytxt.length; i++) {
                 rows += parseInt((arraytxt[i].length - 15) / cols);
@@ -186,7 +238,7 @@
             else textbox.rows = rows;
         }
 
-        window.addEventListener('load', function () {
+        window.addEventListener("load", function () {
             do_resize(textarea);
         });
 
