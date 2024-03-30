@@ -10,7 +10,6 @@ from llama_index.llms.ollama import Ollama
 # Load configuration from config.ini
 config = configparser.ConfigParser()
 config.read('config.ini')
-
 flask_port = config.get('flask', 'port')
 ollama_model = config.get('ollama', 'ollama_model')
 data_folder = config.get('ollama', 'data_folder')
