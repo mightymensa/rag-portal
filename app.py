@@ -61,15 +61,17 @@ def serve_image(path):
 
 @app.route('/ask', methods=['POST'])
 def ask_question():
-    if request.method == 'POST':
         question = request.form.get('question')
         if question:
             response = process_question(question)
             return jsonify({'response': response})
         else:
             return jsonify({'error': 'No question provided'}), 400
-    else:
-        return jsonify({'error': 'Method not allowed'}), 405
+
+@app.route('/random-tip', methods=['GET'])
+def random_question():
+            response = process_question("give me a single point from any of the safety policies")
+            return jsonify({'response': response})
 
 if __name__ == '__main__':
     # Run Flask app with the configured port

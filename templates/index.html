@@ -219,7 +219,7 @@
                     clearInterval(loading);
                     pleaseWait.innerHTML = "";
 
-                    document.getElementById(resp_id).innerHTML = data.response;
+                    document.getElementById(resp_id).innerHTML = data.response.replace(/\n/g, "<br>");
                     // responseContainer.innerHTML += `<div class="response">${data.response}</div>`;
                     chatContainer.scrollTop = chatContainer.scrollHeight;
 
